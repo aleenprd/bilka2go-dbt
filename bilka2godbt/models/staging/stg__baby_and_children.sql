@@ -1,0 +1,73 @@
+WITH 
+SOURCE AS (
+  SELECT * EXCEPT (job_run_datetime)
+  FROM {{ source('bilka2go', 'baby_and_children') }}
+)
+,CLEANED AS (
+  SELECT
+    PRODUCT_ID,
+    CATEGORY_DK,
+    CATEGORY_EN,
+    TITLE,
+    CAST(
+      REPLACE(
+        REPLACE(
+          REPLACE(PRICE, '.', ''),
+          ',-', ''),
+        ',', '.')
+    AS FLOAT64) AS PRICE,
+    CONCAT('https://www.bilkatogo.dk', PRODUCT_URL) AS PRODUCT_URL,
+    IMAGE_URL,
+    CASE  
+      WHEN PRODUCER LIKE '% stk%' THEN NULL
+      ELSE PRODUCER 
+    END AS PRODUCER,
+    REPLACE(
+      LOWER(
+        SPLIT(PRICE_PER_UNIT, '/')[OFFSET(1)]), '.', '') 
+    AS MEASURE_UNIT,
+    QUANTITY AS QUANTITY_RAW,
+    CAST(SPLIT(QUANTITY, ' ')[OFFSET(0)] AS INT64) AS QUANTITY,
+    CAST(
+      REPLACE(
+        REPLACE(SPLIT(PRICE_PER_UNIT, '/')[OFFSET(0)], '.', ''),
+        ',', '.')
+    AS FLOAT64) AS PRICE_PER_UNIT,
+    LABEL1,
+    LABEL2,
+    LABEL3
+  FROM SOURCE
+)
+,FINAL AS (
+  SELECT
+    PRODUCT_ID,
+    CATEGORY_DK,
+    CATEGORY_EN,
+    TITLE,
+    PRODUCT_URL,
+    IMAGE_URL,
+    PRODUCER AS BRAND,
+    LABEL1,
+    LABEL2,
+    LABEL3,
+    COALESCE(PRICE, PRICE_PER_UNIT) AS PRICE,
+    CASE 
+      WHEN MEASURE_UNIT = 'stk' THEN 'stk'
+      WHEN MEASURE_UNIT = 'kg' THEN 'kg'
+      WHEN MEASURE_UNIT = 'g' THEN 'kg'
+      WHEN MEASURE_UNIT = 'l' THEN 'l'
+      WHEN MEASURE_UNIT = 'ml' THEN 'ml'
+      ELSE NULL
+    END AS MEASURE_UNIT,
+    QUANTITY As QUANTITY_RAW,
+    CASE 
+      WHEN LOWER(SPLIT(QUANTITY_RAW, ' ')[OFFSET(1)]) = 'g' 
+        THEN QUANTITY / 1000
+      WHEN LOWER(SPLIT(QUANTITY_RAW, ' ')[OFFSET(1)]) = 'ml' 
+        THEN QUANTITY / 1000
+      ELSE QUANTITY
+    END AS QUANTITY,
+    PRICE_PER_UNIT
+  FROM CLEANED
+)
+SELECT * FROM FINAL

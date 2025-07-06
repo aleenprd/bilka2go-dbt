@@ -1,0 +1,99 @@
+version: 2
+
+sources:
+  - name: bilka2go
+    schema: bilka2go
+    loaded_at_field: job_run_datetime
+    freshness: 
+      error_after:
+        count: 1
+        period: day
+
+    tables:
+      - name: baby_and_children
+        description: "Source table of the baby and children data"
+        identifier: baby_and_children
+      
+      - name: fruits_and_vegetables
+        description: "Source table of the fruits and vegetables data"
+        identifier: fruits_and_vegetables
+      
+      - name: meat_and_fish
+        description: "Source table of the meat and fish data"
+        identifier: meat_and_fish
+      
+      - name: dairy_and_chilled
+        description: "Source table of the dairy and chilled data"
+        identifier: dairy_and_chilled
+      
+      - name: beverages
+        description: "Source table of the beverages data"
+        identifier: beverages
+      
+      - name: bread_and_cakes
+        description: "Source table of the bread and cakes data"
+        identifier: bread_and_cakes
+      
+      - name: groceries
+        description: "Source table of the groceries data"
+        identifier: groceries
+      
+      - name: world_food
+        description: "Source table of the world food data"
+        identifier: world_food
+      
+      - name: sweets_and_snacks
+        description: "Source table of the sweets and snacks data"
+        identifier: sweets_and_snacks
+      
+      - name: frozen_food
+        description: "Source table of the frozen food data"
+        identifier: frozen_food
+      
+      - name: kiosk
+        description: "Source table of the kiosk data"
+        identifier: kiosk
+      
+      - name: pet_food
+        description: "Source table of the pet food data"
+        identifier: pet_food
+      
+      - name: household
+        description: "Source table of the household data"
+        identifier: household
+      
+      - name: personal_care
+        description: "Source table of the personal care data"
+        identifier: personal_care
+      
+      - name: home_and_kitchen
+        description: "Source table of the home and kitchen data"
+        identifier: home_and_kitchen
+      
+      - name: leisure_and_sport
+        description: "Source table of the leisure and sport data"
+        identifier: leisure_and_sport
+      
+      - name: clothing_and_shoes
+        description: "Source table of the clothing and shoes data"
+        identifier: clothing_and_shoes
+      
+      - name: electronics
+        description: "Source table of the electronics data"
+        identifier: electronics
+      
+      - name: garden
+        description: "Source table of the garden data"
+        identifier: garden
+      
+      - name: toys
+        description: "Source table of the toys data"
+        identifier: toys
+      
+      - name: hardware_store
+        description: "Source table of the hardware store data"
+        identifier: hardware_store
+      
+      - name: car_accessories
+        description: "Source table of the car accessories data"
+        identifier: car_accessories

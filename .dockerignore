@@ -1,0 +1,20 @@
+# Git
+.git
+.gitignore
+/homerdbt/.gitignore
+/homerdbt/.git
+/homerdbt/logs
+/homerdbt/.user.yml
+.dbt/.user.yml
+.dbt/.gitignore
+.development/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+*.py[cod]
+*/*.py[cod]
+*/*/*.py[cod]
+*/*/*/*.py[cod]
