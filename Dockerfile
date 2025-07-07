@@ -17,7 +17,7 @@ RUN uv export --no-hashes --format requirements-txt > requirements.txt && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy required files and folders
-COPY /bilka2godbt ${USER_HOME}
+COPY bilka2godbt ${USER_HOME}
 COPY /.dbt ${USER_HOME}/.dbt
 
 # Create a non-root user in the 1024 group
