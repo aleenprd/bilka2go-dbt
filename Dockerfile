@@ -18,7 +18,7 @@ RUN uv export --no-hashes --format requirements-txt > requirements.txt && \
 
 # Copy required files and folders
 COPY bilka2godbt ${USER_HOME}
-COPY /.dbt ${USER_HOME}/.dbt
+COPY .dbt ${USER_HOME}/.dbt
 
 # Create a non-root user in the 1024 group
 RUN addgroup --gid ${USR_GRPID} ${USR_GRPN} && \
