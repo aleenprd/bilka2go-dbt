@@ -1,7 +1,7 @@
 WITH 
 SOURCE AS (
-  SELECT * EXCEPT (job_run_datetime)
-  FROM {{ source('bilka2go', 'baby_and_children') }}
+  SELECT *
+  FROM {{ ref('stg_snapshot__baby_and_children') }}
 )
 ,CLEANED AS (
   SELECT
@@ -35,7 +35,11 @@ SOURCE AS (
     AS FLOAT64) AS PRICE_PER_UNIT,
     LABEL1,
     LABEL2,
-    LABEL3
+    LABEL3,
+    DBT_SCD_ID,
+    DBT_UPDATED_AT,
+    DBT_VALID_FROM,
+    DBT_VALID_TO
   FROM SOURCE
 )
 ,FINAL AS (
@@ -56,18 +60,27 @@ SOURCE AS (
       WHEN MEASURE_UNIT = 'kg' THEN 'kg'
       WHEN MEASURE_UNIT = 'g' THEN 'kg'
       WHEN MEASURE_UNIT = 'l' THEN 'l'
-      WHEN MEASURE_UNIT = 'ml' THEN 'ml'
+      WHEN MEASURE_UNIT = 'ml' THEN 'l'
+      WHEN MEASURE_UNIT = 'm' THEN 'm'
+      WHEN MEASURE_UNIT = 'meter' THEN 'm'
+      WHEN MEASURE_UNIT = 'centimeter' THEN 'm'
+      WHEN MEASURE_UNIT = 'cm' then 'm'
       ELSE NULL
     END AS MEASURE_UNIT,
-    QUANTITY As QUANTITY_RAW,
     CASE 
       WHEN LOWER(SPLIT(QUANTITY_RAW, ' ')[OFFSET(1)]) = 'g' 
         THEN QUANTITY / 1000
       WHEN LOWER(SPLIT(QUANTITY_RAW, ' ')[OFFSET(1)]) = 'ml' 
         THEN QUANTITY / 1000
+      WHEN LOWER(SPLIT(QUANTITY_RAW, ' ')[OFFSET(1)]) = 'cm' 
+        THEN QUANTITY / 100
       ELSE QUANTITY
     END AS QUANTITY,
-    PRICE_PER_UNIT
+    PRICE_PER_UNIT,
+    DBT_SCD_ID,
+    DBT_UPDATED_AT,
+    DBT_VALID_FROM,
+    DBT_VALID_TO
   FROM CLEANED
 )
 SELECT * FROM FINAL

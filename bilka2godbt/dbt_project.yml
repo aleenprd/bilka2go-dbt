@@ -31,13 +31,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   bilka2go:
     staging:
-      +schema: _staging
+      +schema: staging
       +materialized: table
     intermediate:
-      +schema: _intermediate
+      +schema: intermediate
       +materialized: table
 
 snapshots:
   bilka2go:
-    +schema: _staging_snapshots
+    +schema: staging_snapshots
     +materialized: snapshot
