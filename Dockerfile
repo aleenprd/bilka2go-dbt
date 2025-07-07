@@ -8,7 +8,7 @@ ENV USR_GRPID=1024
 ENV USER_HOME=/usr/local/${USR_NAME}
 
 # Install git
-RUN apt-get update && apt-get -y install git && pip install uv
+RUN apt-get update && apt-get -y install --no-install-recommends git && rm -rf /var/lib/apt/lists/* && pip install uv
 
 # Install Python dependencies
 COPY ./pyproject.toml /pyproject.toml
