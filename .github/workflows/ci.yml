@@ -7,12 +7,44 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker:
+  docker-pull-request:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: 'read'
       id-token: 'write'
+    # Only run for pushes to main or pull requests to main
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: image=moby/buildkit:v0.10.6
+          buildkitd-flags: --debug
+      -
+        name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: |
+            bilka2go-dbt:latest
+
+  docker-main:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    # Run for pushes to main (direct push or merged PR)
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       -
         name: Checkout
@@ -29,19 +61,17 @@ jobs:
       - 
         id: authgcp
         name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
-          token_format: access_token
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER_RESOURCE_NAME }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}@${{ secrets.PROJECT_ID }}.iam.gserviceaccount.com
-          access_token_lifetime: 600s
+          credentials_json: '${{ secrets.SERVICE_ACCOUNT_KEY }}'
       - 
         name: Login to Artifact Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ secrets.GAR_REGION }}-docker.pkg.dev
-          username: oauth2accesstoken
-          password: ${{ steps.authgcp.outputs.access_token }}
+          username: _json_key
+          password: '${{ secrets.SERVICE_ACCOUNT_KEY }}'
       -
         name: Build and push
         uses: docker/build-push-action@v4
@@ -49,4 +79,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_REPO }}/${{ vars.APP_NAME }}:latest
+            ${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_REPO }}/bilka2go-dbt:latest
