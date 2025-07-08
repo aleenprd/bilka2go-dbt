@@ -18,3 +18,10 @@ __pycache__/
 */*.py[cod]
 */*/*.py[cod]
 */*/*/*.py[cod]
+
+# .dbt
+.dbt/.user.yml
+
+# secrets
+.env
+.dbt/key.json
