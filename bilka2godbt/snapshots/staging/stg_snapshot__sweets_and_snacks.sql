@@ -9,7 +9,8 @@ config(
     )
 }}
   
-select * except (job_run_datetime) 
+select distinct * except (job_run_datetime) 
 from {{ source('bilka2go', 'sweets_and_snacks') }}
+where image_url != '/images/svg/loading.svg'
 
 {% endsnapshot %}

@@ -27,7 +27,7 @@ RUN addgroup --gid ${USR_GRPID} ${USR_GRPN} && \
 # Set the actual working directory as src
 WORKDIR ${USER_HOME}
 
-# Install DBT dependencies
+# Switch to non-root user and install DBT dependencies
 RUN dbt deps
 
 # Finally execute the DBT code

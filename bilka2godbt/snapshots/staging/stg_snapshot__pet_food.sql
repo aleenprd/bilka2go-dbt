@@ -1,4 +1,4 @@
- {% snapshot stg_snapshot__pet_food %}
+{% snapshot stg_snapshot__pet_food %}
 
 {{
 config(
@@ -11,5 +11,6 @@ config(
   
 select * except (job_run_datetime) 
 from {{ source('bilka2go', 'pet_food') }}
+where image_url != '/images/svg/loading.svg'
 
 {% endsnapshot %}

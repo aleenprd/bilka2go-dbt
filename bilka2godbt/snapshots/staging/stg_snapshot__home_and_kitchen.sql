@@ -11,5 +11,6 @@ config(
   
 select * except (job_run_datetime) 
 from {{ source('bilka2go', 'home_and_kitchen') }}
+where image_url != '/images/svg/loading.svg'
 
 {% endsnapshot %}
