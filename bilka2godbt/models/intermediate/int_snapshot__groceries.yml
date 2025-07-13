@@ -1,11 +1,11 @@
 version: 2
 
 models:
-  - name: int_snapshot__baby_and_children
-    description: "Intermediate model for snapshotting baby and children products with cleaned and transformed data."
+  - name: int_snapshot__groceries
+    description: "Intermediate model for snapshotting groceries with cleaned and transformed data."
 
     config:
-      tags: ['intermediate', 'snapshot', 'bilka2go', 'baby_and_children']
+      tags: ['intermediate', 'snapshot', 'bilka2go', 'groceries']
       materialized: table
       contract:
         enforced: true
@@ -86,14 +86,14 @@ models:
           - not_null
       
       - name: MEASURE_UNIT
-        description: "Standardized unit of measurement (stk, kg, l, ml)."
+        description: "Standardized unit of measurement (stk, kg, l)."
         data_type: STRING
         tests:
           - not_null:
               severity: error
           - accepted_values:
               where: "MEASURE_UNIT is not null"
-              values: ['stk', 'kg', 'l', 'm']
+              values: ['stk', 'kg', 'l']
       
       - name: QUANTITY
         description: "Normalized quantity value (converted to standard units, e.g., g to kg)."
