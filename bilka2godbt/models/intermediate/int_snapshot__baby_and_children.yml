@@ -90,7 +90,7 @@ models:
         data_type: STRING
         tests:
           - not_null:
-              severity: warn
+              severity: error
           - accepted_values:
               where: "MEASURE_UNIT is not null"
               values: ['stk', 'kg', 'l', 'm']
