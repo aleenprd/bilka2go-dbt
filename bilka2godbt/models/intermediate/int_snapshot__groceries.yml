@@ -1,0 +1,141 @@
+version: 2
+
+models:
+  - name: int_snapshot__groceries
+    description: "Intermediate model for snapshotting groceries with cleaned and transformed data."
+
+    config:
+      tags: ['intermediate', 'snapshot', 'bilka2go', 'groceries']
+      materialized: table
+      contract:
+        enforced: true
+
+    columns:
+      - name: PRODUCT_ID
+        description: "Unique identifier for the product."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - unique:
+              where: "DBT_VALID_TO is null"
+      
+      - name: CATEGORY_DK
+        description: "Category name in Danish."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: CATEGORY_EN
+        description: "Category name in English."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: TITLE
+        description: "Title/name of the product."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: PRODUCT_URL
+        description: "Full URL to the product page on bilkatogo.dk."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: IMAGE_URL
+        description: "URL to the product image."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: BRAND
+        description: "Brand/producer of the product (cleaned from raw data)."
+        data_type: STRING
+      
+      - name: LABEL1
+        description: "First label associated with the product (e.g., organic, discount)."
+        data_type: STRING
+      
+      - name: LABEL2
+        description: "Second label associated with the product."
+        data_type: STRING
+      
+      - name: LABEL3
+        description: "Third label associated with the product."
+        data_type: STRING
+      
+      - name: PRICE
+        description: "Current price of the product (cleaned and converted to FLOAT64)."
+        data_type: FLOAT64
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: MEASURE_UNIT
+        description: "Standardized unit of measurement (stk, kg, l)."
+        data_type: STRING
+        tests:
+          - not_null:
+              severity: warn
+          - accepted_values:
+              where: "MEASURE_UNIT is not null"
+              values: ['stk', 'kg', 'l']
+      
+      - name: QUANTITY
+        description: "Normalized quantity value (converted to standard units, e.g., g to kg)."
+        data_type: FLOAT64
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: PRICE_PER_UNIT
+        description: "Price per unit of the product (e.g., price per kg, price per liter)."
+        data_type: FLOAT64
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: DBT_SCD_ID
+        description: "Surrogate key for slowly changing dimensions."
+        data_type: STRING
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - unique
+      
+      - name: DBT_UPDATED_AT
+        description: "Timestamp of the last update to the record."
+        data_type: TIMESTAMP
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: DBT_VALID_FROM
+        description: "Start date of the validity period for the record."
+        data_type: TIMESTAMP
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      
+      - name: DBT_VALID_TO
+        description: "End date of the validity period for the record. Null for currently valid records."
+        data_type: TIMESTAMP
