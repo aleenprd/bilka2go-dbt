@@ -1,6 +1,20 @@
 bilka2go:
   target: json # This is the default target
   outputs:
+      oauth:
+        type: bigquery
+        method: oauth
+        project: "{{ env_var('GCP_PROJECT_ID') }}"
+        dataset: "{{ env_var('GCP_DATASET') }}"
+        location: "{{ env_var('GCP_LOCATION') }}"
+
+        # Bigquery specific configs
+        job_execution_timeout_seconds: 120
+        job_creation_timeout_seconds: 120
+        retries: 1  # Default is 1
+        job_retry_deadline_seconds: 120
+        maximum_bytes_billed: 5368709120  # 5GB  
+        
       keyfile:
         # Generic configs 
         type: bigquery

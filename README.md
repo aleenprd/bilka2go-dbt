@@ -57,7 +57,7 @@ Use .env.example to build your environment variables.
 
 ### dbt Profile Setup
 
-There is already a *.dbt/profiles.yaml* file which you need for your dbt connection. If can use a keyfile in JSON format or environment variables to authenticate with a service account. Alternatively, look into identity workload federation for best practices.
+There is already a *.dbt/profiles.yaml* file which you need for your dbt connection. If can use a keyfile in JSON format or environment variables to authenticate with a service account. You also have the option to use oauth. Alternatively, look into identity workload federation for best practices.
 
 ## Running dbt Commands
 
